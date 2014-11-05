@@ -34,10 +34,11 @@ public class LsPartOne {
     public void partOne() throws IOException {
 
         LsBuilder ls = new LsBuilder();
+        // Change this path to suit your needs
         List<Path> listing = ls.path("/Users/corbett/dev")
             .glob("*")
             .depth(1)
-            .sortBySize(SortOrder.DESC)
+            .sortByCreated(SortOrder.DESC)
             .unit(Unit.Megabyte)
             .listing();
 

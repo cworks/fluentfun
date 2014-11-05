@@ -9,8 +9,18 @@
  */
 package github.cworks.fs.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
- * Semantic Model for listing directory content
+ * Semantic Model for listing directory content.  Modeled after
+ * the standard unix 'ls' command.
+ *
+ * The idea here is to capture the 'ls' command in a typical
+ * command-query Java class.  This class can be used independent of
+ * any fluent pattern which would encapsulate this command-query class.
+ *
  * @author corbett
  */
 public class Ls {
@@ -32,8 +42,44 @@ public class Ls {
     private SortOrder sortByModified = SortOrder.DEFAULT;
     private SortOrder sortByCreated = SortOrder.DEFAULT;
 
-    public Ls() {
+    /**
+     * Private model used to capture sort property and order
+     */
+    public static class OrderBy {
+        private String property;
+        private SortOrder order;
+        public OrderBy(String property, SortOrder order) {
+            this.property = property;
+            this.order = order;
+        }
+        public String getProperty() {
+            return this.property;
+        }
+        public SortOrder getOrder() {
+            return this.order;
+        }
+        public boolean equals(Object object) {
+            if(object == null) return false;
+            if(getClass() != object.getClass()) return false;
+            final OrderBy other = (OrderBy)object;
+            if(other.property.equalsIgnoreCase(this.property)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        public int hashCode() {
+            return this.property.hashCode();
+        }
+    }
 
+    /**
+     * List that contains properties to order the Ls operation on, including the order (DESC, ASC)
+     */
+    private List<OrderBy> orderBy = new ArrayList<OrderBy>();
+
+    public Ls() {
+        //upsert(new OrderBy("name", SortOrder.ASC));
     }
 
     // -----------------------------------------------------------------------
@@ -81,23 +127,23 @@ public class Ls {
     }
 
     public void setSortByName(SortOrder value) {
-        this.sortByName = value;
+        upsert(new OrderBy("name", value));
     }
 
     public void setSortBySize(SortOrder value) {
-        this.sortBySize = value;
+        upsert(new OrderBy("size", value));
     }
 
     public void setSortByType(SortOrder value) {
-        this.sortByType = value;
+        upsert(new OrderBy("type", value));
     }
 
     public void setSortByModified(SortOrder value) {
-        this.sortByModified = value;
+        upsert(new OrderBy("modified", value));
     }
 
     public void setSortByCreated(SortOrder value) {
-        this.sortByCreated = value;
+        upsert(new OrderBy("created", value));
     }
 
     // -----------------------------------------------------------------------
@@ -162,5 +208,14 @@ public class Ls {
 
     public SortOrder getSortByCreated() {
         return sortByCreated;
+    }
+
+    public List<OrderBy> getSortOrder() {
+        return Collections.unmodifiableList(this.orderBy);
+    }
+
+    private void upsert(OrderBy value) {
+        this.orderBy.remove(value);
+        this.orderBy.add(value);
     }
 }

@@ -16,10 +16,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
+import static github.cworks.fs.walk.LsComparator.SORT_BY_CREATED;
+import static github.cworks.fs.walk.LsComparator.SORT_BY_NAME;
+import static github.cworks.fs.walk.LsComparator.SORT_BY_SIZE;
+import static github.cworks.fs.walk.LsComparator.desc;
+import static github.cworks.fs.walk.LsComparator.getComparator;
 
 public class LsCommand {
 
@@ -37,11 +45,40 @@ public class LsCommand {
         Files.walkFileTree(path, Collections.EMPTY_SET, ls.getDepth(), visitor);
 
         this.listing = visitor.getListing();
-        if(ls.getSortBySize() != SortOrder.DEFAULT) {
-            sortBySize();
+        // sort listing
+        if(ls.getSortOrder().size() > 0) {
+            List<Comparator> comparators = new ArrayList<Comparator>();
+            Iterator<Ls.OrderBy> it = ls.getSortOrder().iterator();
+            while(it.hasNext()) {
+                Ls.OrderBy orderBy = it.next();
+                if(orderBy.getProperty().equals("name")) {
+                    if(orderBy.getOrder() == SortOrder.DESC) {
+                        comparators.add(desc(SORT_BY_NAME));
+                    } else {
+                        comparators.add(SORT_BY_NAME);
+                    }
+                } else if(orderBy.getProperty().equals("size")) {
+                    if(orderBy.getOrder() == SortOrder.DESC) {
+                        comparators.add(desc(SORT_BY_SIZE));
+                    } else {
+                        comparators.add(SORT_BY_SIZE);
+                    }
+                } else if(orderBy.getProperty().equals("created")) {
+                    if(orderBy.getOrder() == SortOrder.DESC) {
+                        comparators.add(desc(SORT_BY_CREATED));
+                    } else {
+                        comparators.add(SORT_BY_CREATED);
+                    }
+                }
+            }
+            sortBy(getComparator(comparators.toArray(new Comparator[comparators.size()])));
         }
 
         return this;
+    }
+
+    void sortBy(Comparator comparator) {
+        Collections.sort(listing, comparator);
     }
 
     public void sortByName() {

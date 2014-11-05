@@ -22,6 +22,9 @@ import static github.cworks.fs.Utilities.isNullOrEmpty;
 
 public class LsBuilder {
 
+    /**
+     * The model instance this Builder is delegating to
+     */
     private Ls model = new Ls();
 
     public LsBuilder path(String path) {
@@ -80,52 +83,52 @@ public class LsBuilder {
     }
 
     public LsBuilder sortByName() {
-        model.setSortByName(SortOrder.ASC);
+        this.model.setSortByName(SortOrder.ASC);
         return this;
     }
 
     public LsBuilder sortByName(SortOrder value) {
-        model.setSortByName(value);
+        this.model.setSortByName(value);
         return this;
     }
 
     public LsBuilder sortBySize() {
-        model.setSortBySize(SortOrder.DESC);
+        this.model.setSortBySize(SortOrder.DESC);
         return this;
     }
 
     public LsBuilder sortBySize(SortOrder value) {
-        model.setSortBySize(value);
+        this.model.setSortBySize(value);
         return this;
     }
 
     public LsBuilder sortByType() {
-        model.setSortByType(SortOrder.ASC);
+        this.model.setSortByType(SortOrder.ASC);
         return this;
     }
 
     public LsBuilder sortByType(SortOrder value) {
-        model.setSortByType(value);
+        this.model.setSortByType(value);
         return this;
     }
 
     public LsBuilder sortByModified() {
-        model.setSortByModified(SortOrder.DESC);
+        this.model.setSortByModified(SortOrder.DESC);
         return this;
     }
 
     public LsBuilder sortByModified(SortOrder value) {
-        model.setSortByModified(value);
+        this.model.setSortByModified(value);
         return this;
     }
 
     public LsBuilder sortByCreated() {
-        model.setSortByCreated(SortOrder.DESC);
+        this.model.setSortByCreated(SortOrder.DESC);
         return this;
     }
 
     public LsBuilder sortByCreated(SortOrder value) {
-        model.setSortByCreated(value);
+        this.model.setSortByCreated(value);
         return this;
     }
 
